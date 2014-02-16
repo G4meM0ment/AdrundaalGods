@@ -122,13 +122,20 @@ public class AdrundaalGods extends JavaPlugin {
 		gD.saveConfig();
 	}
 	
+	/**
+	 * reload all data files
+	 */
 	public void reloadDataFiles() {
-		AGManager.getGodData().reloadConfig();
-		AGManager.getGodData().loadDataFromFile();
 		AGManager.getShrineData().reloadConfig();
 		AGManager.getShrineData().loadDataFromFile();
 		AGManager.getPlayerData().reloadConfig();
 		AGManager.getPlayerData().loadDataFromFile();
+	}
+	public void saveDataFiles() {
+		AGManager.getShrineData().saveDataToFile();
+		AGManager.getShrineData().saveConfig();
+		AGManager.getPlayerData().saveDataToFile();
+		AGManager.getPlayerData().saveConfig();
 	}
 	
 	private WorldEditPlugin initWorldEdit() 
@@ -147,13 +154,6 @@ public class AdrundaalGods extends JavaPlugin {
 	{
 		return we;
 	}
-	
-/*	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if(cmdH.exec(sender, command, label, args))
-			return true;
-		else		
-			return false;
-	} */
 
 	public String getDir() {
 		return dir;

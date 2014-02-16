@@ -17,10 +17,12 @@ import org.bukkit.command.CommandSender;
 import de.G4meM0ment.AdrundaalGods;
 import de.G4meM0ment.Commands.Admin.FileReloadCommand;
 import de.G4meM0ment.Commands.Admin.FileSaveCommand;
+import de.G4meM0ment.Commands.Admin.VersionCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineAddCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineListCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineRedefineCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineRemoveCommand;
+import de.G4meM0ment.Commands.Admin.Shrine.ShrineShowCommand;
 import de.G4meM0ment.Commands.User.StatisticCommand;
 import de.G4meM0ment.Handler.PermHandler;
 import de.G4meM0ment.Messenger.Message;
@@ -46,7 +48,7 @@ public class CommandHandler implements CommandExecutor {
         
         // If there's no base argument, show a helpful message.
         if (base.equals("") && !bcmd.getName().equalsIgnoreCase("shrines")) {
-            //Messenger.tell(sender, Msg.MISC_HELP);
+            Messenger.sendMessage(sender, "/ag help|?");
             return true;
         }
         
@@ -61,7 +63,7 @@ public class CommandHandler implements CommandExecutor {
         
         // If there's more than one match, display them.
         if (matches.size() > 1) {
-           // Messenger.tell(sender, Msg.MISC_MULTIPLE_MATCHES);
+            Messenger.sendMessage(sender, "Multiple command matches");
             for (Command cmd : matches) {
                 showUsage(cmd, sender, false);
             }
@@ -70,7 +72,7 @@ public class CommandHandler implements CommandExecutor {
         
         // If there are no matches at all, notify.
         if (matches.size() == 0) {
-          //  Messenger.tell(sender, Msg.MISC_NO_MATCHES);
+          	Messenger.sendMessage(sender, "Command found");
             return true;
         }
         
@@ -146,7 +148,6 @@ public class CommandHandler implements CommandExecutor {
     private void showHelp(CommandSender sender) {
         StringBuilder user = new StringBuilder();
         StringBuilder admin = new StringBuilder();
-        StringBuilder setup = new StringBuilder();
 
         for (Command cmd : commands.values()) {
             CommandInfo info = cmd.getClass().getAnnotation(CommandInfo.class);
@@ -163,7 +164,7 @@ public class CommandHandler implements CommandExecutor {
                  .append(ChatColor.YELLOW).append(info.desc());
         }
 
-        if (admin.length() == 0 && setup.length() == 0) {
+        if (admin.length() == 0) {
         	Messenger.sendMessage(sender, "Available Commands: "+user.toString());
         } else {
         	Messenger.sendMessage(sender, "User Commands: "+user.toString());
@@ -185,11 +186,13 @@ public class CommandHandler implements CommandExecutor {
         //file util cmds
         register(FileReloadCommand.class);
         register(FileSaveCommand.class);
+        register(VersionCommand.class);
         //shrine cmds
         register(ShrineAddCommand.class);
         register(ShrineRedefineCommand.class);
         register(ShrineListCommand.class);
         register(ShrineRemoveCommand.class);
+        register(ShrineShowCommand.class);
         
         /*        
          * user commands

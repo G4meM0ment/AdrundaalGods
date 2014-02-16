@@ -22,17 +22,18 @@ public class FileReloadCommand implements Command {
 	    String arg1 = (args.length > 0 ? args[0] : "");
 	        
 	    if(arg1.isEmpty()) {
-	    	//TODO reload plugin config
+	    	plugin.reloadConfigs();
+	    	plugin.reloadDataFiles();
 	        Messenger.sendMessage(sender, ChatColor.GRAY+"All files reloaded");
 	        return true;
 	    }
 
 	    if(arg1.equalsIgnoreCase("config")) {
-	    	//TODO reload plugin config
+	    	plugin.reloadConfigs();
 	    	Messenger.sendMessage(sender, ChatColor.GRAY+"Configs reloaded");
 	    	return true;
 	    } else if(arg1.equalsIgnoreCase("data")) {
-	        //TODO reload data
+	        plugin.reloadDataFiles();
 	        Messenger.sendMessage(sender, ChatColor.GRAY+"Data files reloaded");
 	        return true;
 	    } else

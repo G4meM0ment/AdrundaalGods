@@ -27,8 +27,7 @@ public class GodData {
 	
 	private static String dir;
 
-	public GodData(AdrundaalGods plugin) 
-	{
+	public GodData(AdrundaalGods plugin) {
 		this.plugin = plugin;
 		gH = new GodHandler();
 		
@@ -36,16 +35,13 @@ public class GodData {
 		configFile = new File(dir+"/gods.yml");
 	}
 
-	public GodData() 
-	{
+	public GodData() {
 		plugin = ((AdrundaalGods) Bukkit.getPluginManager().getPlugin("AdrundaalGods"));
 		gH = new GodHandler();
 	}
 	
-	public void reloadConfig() 
-	{
-	    if (configFile == null) 
-	    {
+	public void reloadConfig() {
+	    if (configFile == null) {
 	    	configFile = new File(dir, "/gods.yml");
 	    	
 	    	// Look for defaults in the jar
