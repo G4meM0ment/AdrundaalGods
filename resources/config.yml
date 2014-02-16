@@ -1,0 +1,8 @@
+prayItem: ENCHANTED_BOOK
+prayItemName: Enchanted Book
+prayMenuTitle: Wähle dein Gebet
+usePotionEffects: true
+disableMovement: true
+removeNegativePotionEffects: true
+disableChatAndCommands: true
+shrineCooldown: 86400000

@@ -1,0 +1,43 @@
+GottA:
+  displayname: Adrundaalus der Epische
+  description: Dies ist ein starker Gott
+  prayings:
+    GebetA:
+      displayname: Gebet des Items
+      description: Ein Gebet f�r ein magisches Buch
+      chance: 80
+      praytime: 5000
+      benefit:
+        type: LEATHER_BOOTS
+        meta:
+          ==: ItemMeta
+          meta-type: LEATHER_ARMOR
+          display-name: §aDicke Stiefel
+          lore:
+          - §fFüße                           Stiefel
+          - '§fR�stung: 1 - 2'
+          - '§fWert: 750 Aurei'
+          - §fKein Pfeil vermag sie zu durchdringen
+          enchants:
+            PROTECTION_PROJECTILE: 1
+          color:
+            ==: Color
+            RED: 102
+            BLUE: 0
+            GREEN: 51
+    GebetB:
+      displayname: Bitte um Hilfe
+      description: Bitte um Exp
+      chance: 50
+      praytime: 15000
+      benefit:
+        type: EXP
+        amount: 200
+    GebetC:
+      displayname: M�nchsbitte
+      description: Bitte ein M�nch zu werden
+      chance: 20
+      praytime: 20000
+      benefit:
+        type: CMD
+        cmd: pex user %player% group add Gebetsbruder
