@@ -47,13 +47,13 @@ public class CommandHandler implements CommandExecutor {
         String last = (args.length > 0 ? args[args.length - 1] : "");
         
         // If there's no base argument, show a helpful message.
-        if (base.equals("") && !bcmd.getName().equalsIgnoreCase("shrines")) {
+        if (base.equals("")) {
             Messenger.sendMessage(sender, "/ag help|?");
             return true;
         }
         
         // The help command is a little special
-        if (base.equals("?") || base.equals("help")) {
+        if (base.equals("?") || base.equalsIgnoreCase("help")) {
             showHelp(sender);
             return true;
         }
@@ -72,7 +72,7 @@ public class CommandHandler implements CommandExecutor {
         
         // If there are no matches at all, notify.
         if (matches.size() == 0) {
-          	Messenger.sendMessage(sender, "Command found");
+          	Messenger.sendMessage(sender, "Command not found");
             return true;
         }
         
@@ -110,7 +110,7 @@ public class CommandHandler implements CommandExecutor {
         
         // Grab the commands that match the argument.
         for (Entry<String,Command> entry : commands.entrySet()) {
-            if (arg.matches(entry.getKey())) {
+            if (arg.equalsIgnoreCase(entry.getKey())) {
                 result.add(entry.getValue());
             }
         }

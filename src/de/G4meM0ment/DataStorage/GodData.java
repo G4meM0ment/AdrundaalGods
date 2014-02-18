@@ -32,7 +32,7 @@ public class GodData {
 		gH = new GodHandler();
 		
 		dir = plugin.getDir();
-		configFile = new File(dir+"/gods.yml");
+//		configFile = new File(dir+"/gods.yml");
 	}
 
 	public GodData() {
@@ -41,21 +41,23 @@ public class GodData {
 	}
 	
 	public void reloadConfig() {
-	    if (configFile == null) {
-	    	configFile = new File(dir, "/gods.yml");
-	    	
-	    	// Look for defaults in the jar
-		    InputStream defConfigStream = plugin.getResource(defConfig);
-		    if (defConfigStream != null)
-		    {
-		        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-		        config.setDefaults(defConfig);
-		        config.options().copyHeader(true);
-		        config.options().copyDefaults(true);
-		    }
-	    	plugin.getLogger().info("Created god config.");
+		boolean configExists = configExists();
+		if (configFile == null) {
+	    	configFile = new File(dir+"/gods.yml");
 	    }
+	    	
 	    config = YamlConfiguration.loadConfiguration(configFile);
+	    
+	    // Look for defaults in the jar
+	    InputStream defConfigStream = plugin.getResource(defConfig);
+	    if (defConfigStream != null && !configExists) {
+			YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+			config.setDefaults(defConfig);
+			config.options().copyHeader(true);
+			config.options().copyDefaults(true);
+			saveConfig();
+			plugin.getLogger().info("Created god config.");
+	    }
 	    plugin.getLogger().info("Gods loaded.");
 	}
 	public FileConfiguration getConfig() 
@@ -76,6 +78,13 @@ public class GodData {
 	    {
 	    	plugin.getLogger().log(Level.SEVERE, "Could not save data to " + configFile, ex);
 	    }
+	}
+	private boolean configExists() {
+		for(File file : new File(dir).listFiles()) {
+			if(file.getName().equalsIgnoreCase("gods.yml"))
+				return true;
+		}
+		return false;
 	}
 	
 	public void loadDataFromFile()

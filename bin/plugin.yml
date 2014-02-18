@@ -1,6 +1,6 @@
 name: AdrundaalGods
 main: de.G4meM0ment.AdrundaalGods
-version: 0.00.001
+version: 0.00.002
 Author: [G4meM0ment]
 depend: [Vault]
 softdepend: []

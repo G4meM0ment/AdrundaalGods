@@ -84,7 +84,9 @@ public class AdrundaalGods extends JavaPlugin {
 			public void run() {
 				gD.loadDataFromFile();
 				sD.loadDataFromFile();
-				pD.loadDataFromFile();				
+				pD.loadDataFromFile();	
+				
+				initAutoSaver();
 			}
 		});
 
@@ -100,6 +102,17 @@ public class AdrundaalGods extends JavaPlugin {
 		pD.saveDataToFile();
 		sD.saveDataToFile();
 		gD.saveConfig();
+	}
+	
+	private void initAutoSaver() {
+		final AdrundaalGods plugin = this;
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+			@Override
+			public void run() {
+				plugin.saveConfigs();
+				plugin.saveDataFiles();
+			}
+		}, 0, 12000);
 	}
 	
 	/**

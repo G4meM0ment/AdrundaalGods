@@ -1,5 +1,8 @@
 package de.G4meM0ment.Commands.Admin.Shrine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -19,6 +22,9 @@ import de.G4meM0ment.Messenger.Messenger;
 	    permission = "adrundaalgods.admin"
 	)
 public class ShrineShowCommand implements Command {
+	
+	private static List<Shrine> showing = new ArrayList<Shrine>();
+	
 	@SuppressWarnings("deprecation")
 	@Override
 	public boolean execute(AdrundaalGods plugin, CommandSender sender, String... args) {
@@ -33,7 +39,9 @@ public class ShrineShowCommand implements Command {
 			
 		if(s == null)
 			Messenger.sendMessage(sender, "Shrine not found");
-		else {
+		else if(showing.contains(s))
+			Messenger.sendMessage(sender, "Shrine already shown!");
+		else {			
 			final Material maxMat = s.getMax().getBlock().getType();
 			final Material minMat = s.getMin().getBlock().getType();
 			final byte maxData = s.getMax().getBlock().getData();
@@ -44,6 +52,8 @@ public class ShrineShowCommand implements Command {
 			s.getMax().getBlock().setData((byte) 14);
 			s.getMin().getBlock().setData((byte) 14);
 			
+			showing.add(s);
+			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 				@Override
 				public void run() {
@@ -51,6 +61,7 @@ public class ShrineShowCommand implements Command {
 					s.getMin().getBlock().setType(minMat);
 					s.getMax().getBlock().setData(maxData);
 					s.getMin().getBlock().setData(minData);
+					showing.remove(s);
 				}
 			}, 200);
 		}
