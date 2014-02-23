@@ -112,6 +112,8 @@ public class PlayerHandler {
 				agp.setPraying(false);
 			}
 		}, praying.getPraytime()/50);
+		
+		updateBookText(player);
 	}
 	
 	/**
@@ -195,7 +197,7 @@ public class PlayerHandler {
 		int i = 0;
 		for(Praying praying : g.getPrayings()) {
 			if(!PermHandler.hasPrayingPerm(p, praying)) continue;
-			menu.setOption(i, new ItemStack(ConfigHandler.prayItem, 1), praying.getDisplayname(), praying.getDescription());	 
+			menu.setOption(i, new ItemStack(ConfigHandler.prayItem, 1), ChatColor.translateAlternateColorCodes('&', praying.getDisplayname()), ChatColor.translateAlternateColorCodes('&', praying.getDescription()));	 
 			i++;
 		}
 		
@@ -234,13 +236,13 @@ public class PlayerHandler {
 		BookMeta book = (BookMeta) p.getItemInHand().getItemMeta();
 		List<String> pages = new ArrayList<String>();
 		
-		pages.add(ChatColor.BOLD+"\n\n\n\n\n\n          "+ConfigHandler.prayItemName);
+		pages.add(ChatColor.BOLD+"\n\n\n\n\n\n     "+ConfigHandler.prayItemName);
 		pages.add("\n\n\n\n\n\nDu hast bereits "+agp.getFoundShrines().size()+" von "+AGManager.getShrineHandler().getShrines().size()+" Schreinen gefunden.");
 		for(God god : AGManager.getGodHandler().getGodList()) {
-			pages.add(ChatColor.BOLD+god.getDisplayname()+"\n\n"+ChatColor.RESET+god.getDescription());
+			pages.add(ChatColor.BOLD+ChatColor.translateAlternateColorCodes('&', god.getDisplayname())+"\n\n"+ChatColor.translateAlternateColorCodes('&', god.getDescription()));
 			
 			for(Praying praying : god.getPrayings()) {
-				pages.add(ChatColor.BOLD+praying.getDisplayname()+"\n\n"+ChatColor.RESET+praying.getDescription());
+				pages.add(ChatColor.BOLD+ChatColor.translateAlternateColorCodes('&', praying.getDisplayname())+"\n\n"+ChatColor.translateAlternateColorCodes('&', praying.getDescription()));
 			}
 		}
 		book.setPages(pages);

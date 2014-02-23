@@ -32,9 +32,6 @@ public class ShrineShowCommand implements Command {
 		if(args.length < 1)
 			return false;
 		
-		/*
-		 * removing an existing shrine from cache
-		 */
 		final Shrine s = AGManager.getShrineHandler().getShrine(args[0]);
 			
 		if(s == null)

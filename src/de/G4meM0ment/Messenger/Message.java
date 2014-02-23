@@ -60,25 +60,27 @@ public class Message {
 	public Message(AdrundaalGods plugin)
 	{
 		Message.plugin = plugin;
+		file = new File(plugin.getDir()+"/messages.yml");
 	}
 	
 	public static void reloadFile() 
 	{
-	    if (file == null) 
+		boolean configExists = configExists();
+	    if(file == null) 
 	    {
 	    	file = new File(plugin.getDir()+"/messages.yml");
-	    	plugin.getLogger().info("Created message file.");
 	    }
 	    msgs = YamlConfiguration.loadConfiguration(file);
 	 
 	    // Look for defaults in the jar
 	    InputStream defConfigStream = plugin.getResource("messages.yml");
-	    if (defConfigStream != null)
+	    if(!configExists && defConfigStream != null)
 	    {
 	        YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
 	        msgs.setDefaults(defConfig);
 	        msgs.options().copyHeader(true);
 	        msgs.options().copyDefaults(true);
+	        plugin.getLogger().info("Messages file created.");
 	    }
 	    plugin.getLogger().info("Messages file loaded.");
 	}
@@ -94,6 +96,13 @@ public class Message {
 	    {
 	    	plugin.getLogger().log(Level.SEVERE, "Could not save data to " + file, ex);
 	    }
+	}
+	private static boolean configExists() {
+		for(File file : new File(plugin.getDir()).listFiles()) {
+			if(file.getName().equalsIgnoreCase("messages.yml"))
+				return true;
+		}
+		return false;
 	}
 	
 	public static void loadMessages()

@@ -23,6 +23,7 @@ import de.G4meM0ment.Commands.Admin.Shrine.ShrineListCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineRedefineCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineRemoveCommand;
 import de.G4meM0ment.Commands.Admin.Shrine.ShrineShowCommand;
+import de.G4meM0ment.Commands.Admin.Shrine.ShrineTpCommand;
 import de.G4meM0ment.Commands.User.StatisticCommand;
 import de.G4meM0ment.Handler.PermHandler;
 import de.G4meM0ment.Messenger.Message;
@@ -193,6 +194,7 @@ public class CommandHandler implements CommandExecutor {
         register(ShrineListCommand.class);
         register(ShrineRemoveCommand.class);
         register(ShrineShowCommand.class);
+        register(ShrineTpCommand.class);
         
         /*        
          * user commands
