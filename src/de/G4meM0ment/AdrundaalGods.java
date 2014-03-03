@@ -132,7 +132,7 @@ public class AdrundaalGods extends JavaPlugin {
 	public void saveConfigs() {
 		saveConfig();
 		Message.saveFile();
-		gD.saveConfig();
+		//gD.saveConfig();
 	}
 	
 	/**

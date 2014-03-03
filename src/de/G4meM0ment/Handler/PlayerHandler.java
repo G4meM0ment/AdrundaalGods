@@ -113,7 +113,7 @@ public class PlayerHandler {
 			}
 		}, praying.getPraytime()/50);
 		
-		updateBookText(player);
+		updateBookText(player, player.getItemInHand());
 	}
 	
 	/**
@@ -209,7 +209,7 @@ public class PlayerHandler {
 	 * @param p
 	 * @return
 	 */
-	public boolean hasPrayItem(Player p) {
+	public boolean hasPrayItemInHand(Player p) {
 		//material equals
 		if(!p.getItemInHand().getType().equals(ConfigHandler.prayItem) || !p.getItemInHand().hasItemMeta())
 			return false;
@@ -219,33 +219,68 @@ public class PlayerHandler {
 		//has correct name
 		if(p.getItemInHand().getItemMeta().getDisplayName().equalsIgnoreCase(ConfigHandler.prayItemName))
 			return true;
-		return true;
+		return false;
+	}
+	/**
+	 * Check if the player has a prayitem in his inventory
+	 * @param p
+	 * @return
+	 */
+	public boolean hasPrayItem(Player p) {
+		if(getPrayItem(p) == null)
+			return false;
+		else
+			return true;
+	}
+	/**
+	 * Get pray item from player inventory
+	 * @param p
+	 * @return
+	 */
+	public ItemStack getPrayItem(Player p) {
+		for(ItemStack i : p.getInventory()) {
+			//material equals
+			if(!i.getType().equals(ConfigHandler.prayItem) || !i.hasItemMeta())
+				continue;
+			//another check -.-
+			if(!i.getItemMeta().hasDisplayName())
+				continue;
+			//has correct name
+			if(i.getItemMeta().getDisplayName().equalsIgnoreCase(ConfigHandler.prayItemName))
+				return i;
+		}
+		return null;
 	}
 	
 	/**
 	 * Update the praying items text if it's an written book
 	 * @param p
 	 */
-	public void updateBookText(Player p) {
-		if(!p.getItemInHand().getType().equals(Material.WRITTEN_BOOK)) return;
-		if(!(p.getItemInHand().getItemMeta() instanceof BookMeta)) return;
+	public void updateBookText(Player p, ItemStack item) {
+		ItemStack i = item == null  ? p.getItemInHand() : item;
+		
+		if(!i.getType().equals(Material.WRITTEN_BOOK)) return;
+		if(!(i.getItemMeta() instanceof BookMeta)) return;
 		
 		AGPlayer agp = getAGPlayer(p.getName());
 		if(agp == null)
 			agp = addAGPlayer(p.getName());
-		BookMeta book = (BookMeta) p.getItemInHand().getItemMeta();
+		BookMeta book = (BookMeta) i.getItemMeta();
 		List<String> pages = new ArrayList<String>();
 		
-		pages.add(ChatColor.BOLD+"\n\n\n\n\n\n     "+ConfigHandler.prayItemName);
+		pages.add(ChatColor.BOLD+"\n\n\n\n\n\n     "+stripColorCodes(ConfigHandler.prayItemName));
 		pages.add("\n\n\n\n\n\nDu hast bereits "+agp.getFoundShrines().size()+" von "+AGManager.getShrineHandler().getShrines().size()+" Schreinen gefunden.");
 		for(God god : AGManager.getGodHandler().getGodList()) {
-			pages.add(ChatColor.BOLD+ChatColor.translateAlternateColorCodes('&', god.getDisplayname())+"\n\n"+ChatColor.translateAlternateColorCodes('&', god.getDescription()));
+			pages.add(ChatColor.BOLD+stripColorCodes(god.getDisplayname())+"\n\n"+ChatColor.RESET+stripColorCodes(god.getDescription()));
 			
 			for(Praying praying : god.getPrayings()) {
-				pages.add(ChatColor.BOLD+ChatColor.translateAlternateColorCodes('&', praying.getDisplayname())+"\n\n"+ChatColor.translateAlternateColorCodes('&', praying.getDescription()));
+				pages.add(ChatColor.BOLD+stripColorCodes(praying.getDisplayname())+"\n\n"+ChatColor.RESET+stripColorCodes(praying.getDescription()));
 			}
 		}
 		book.setPages(pages);
-		p.getItemInHand().setItemMeta(book);
+		i.setItemMeta(book);
+	}
+	private String stripColorCodes(String s) {
+		return ChatColor.stripColor(ChatColor.translateAlternateColorCodes('&', s));
 	}
 }

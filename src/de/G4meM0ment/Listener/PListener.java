@@ -11,11 +11,13 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 
@@ -43,15 +45,20 @@ public class PListener implements Listener {
 		sH = new ShrineHandler();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		//if player not has prayitem but is rightclicking a shrine, he gets a message
+		if(event.isCancelled() && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
 		if(!PermHandler.hasUserPerm(event.getPlayer())) return;
-		if(!pH.hasPrayItem(event.getPlayer()) && sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
-			Messenger.sendMessage(event.getPlayer(), Message.wrongItem);
-			event.setCancelled(true);
-			return;
+		
+		if(!pH.hasPrayItem(event.getPlayer()) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			if(sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
+				Messenger.sendMessage(event.getPlayer(), Message.wrongItem);
+				event.setCancelled(true);
+				return;
+			}
 		}
+		
 		if(!pH.hasPrayItem(event.getPlayer())) return;
 		
 		AGPlayer agp = pH.getAGPlayer(event.getPlayer().getName());
@@ -59,7 +66,7 @@ public class PListener implements Listener {
 			agp = pH.addAGPlayer(event.getPlayer().getName());
 		
 		if(!sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
-			pH.updateBookText(event.getPlayer());
+			pH.updateBookText(event.getPlayer(), null);
 		} else {
 			if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 			
@@ -146,5 +153,26 @@ public class PListener implements Listener {
 		if(item.getType().equals(Material.WRITTEN_BOOK) && item.hasItemMeta())
 			if(item.getItemMeta().getDisplayName().equalsIgnoreCase(ConfigHandler.prayItemName))
 				event.getInventory().setResult(null);	
+	}
+	
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
+	public void onInventoryClick(InventoryClickEvent event)
+	{
+		AGPlayer agp = pH.getAGPlayer(event.getWhoClicked().getName());
+		if(agp == null)
+			return;
+		
+		if(pH.hasPrayItem(agp.getPlayer()))
+			pH.updateBookText(agp.getPlayer(), pH.getPrayItem(agp.getPlayer()));
+	}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void onPlayerPickupItem(PlayerPickupItemEvent event)
+	{
+		AGPlayer agp = pH.getAGPlayer(event.getPlayer().getName());
+		if(agp == null)
+			return;
+		
+		if(pH.hasPrayItem(agp.getPlayer()))
+			pH.updateBookText(agp.getPlayer(), pH.getPrayItem(agp.getPlayer()));
 	}
 }

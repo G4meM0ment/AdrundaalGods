@@ -19,18 +19,14 @@ import de.G4meM0ment.Messenger.Messenger;
 public class ShrineListCommand implements Command {
 	@Override
 	public boolean execute(AdrundaalGods plugin, CommandSender sender, String... args) {
-	        
 		/*
 		 * list all existing shrines
 		 */
-		if(args[1].equalsIgnoreCase("list")) {
-			String list = "Shrines: ";
-			for(Shrine s : AGManager.getShrineHandler().getShrines())
-				list += s.getName()+", ";
+		String list = "Shrines: ";
+		for(Shrine s : AGManager.getShrineHandler().getShrines())
+			list += s.getName()+", ";
 			
-			Messenger.sendMessage(sender, list);
-			return true;
-		}
+		Messenger.sendMessage(sender, list);
 		return true;
 	}
 }
