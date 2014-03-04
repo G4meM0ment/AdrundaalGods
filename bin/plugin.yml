@@ -9,7 +9,3 @@ commands:
         aliases: [ag]
         description: Main command for adrundaal gods
         usage: /ag [reload]
-    shrines:
-        aliases: [shrines]
-        description: Listet deine gefundenen Schreine auf
-        usage: /shrines <player>

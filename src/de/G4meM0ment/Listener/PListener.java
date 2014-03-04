@@ -50,8 +50,9 @@ public class PListener implements Listener {
 		//if player not has prayitem but is rightclicking a shrine, he gets a message
 		if(event.isCancelled() && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
 		if(!PermHandler.hasUserPerm(event.getPlayer())) return;
+		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 		
-		if(!pH.hasPrayItem(event.getPlayer()) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+		if(!pH.hasPrayItem(event.getPlayer())) {
 			if(sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
 				Messenger.sendMessage(event.getPlayer(), Message.wrongItem);
 				event.setCancelled(true);
@@ -64,12 +65,10 @@ public class PListener implements Listener {
 		AGPlayer agp = pH.getAGPlayer(event.getPlayer().getName());
 		if(agp == null)
 			agp = pH.addAGPlayer(event.getPlayer().getName());
-		
+
 		if(!sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
 			pH.updateBookText(event.getPlayer(), null);
 		} else {
-			if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-			
 			Shrine s = sH.getShrine(event.getClickedBlock().getLocation(), 0);
 			if(agp.hasCooldown(s)) {
 				Messenger.sendMessage(event.getPlayer(), Message.cooldown, "%min%", ((ConfigHandler.shrineCooldown-(System.currentTimeMillis()-agp.getPrayed().get(s)))/1000)/60+"");
