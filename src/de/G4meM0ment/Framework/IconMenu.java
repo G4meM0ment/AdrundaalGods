@@ -61,10 +61,13 @@ public class IconMenu implements Listener {
         optionIcons = null;
     }
    
-    @EventHandler(priority=EventPriority.MONITOR)
+    @EventHandler(priority=EventPriority.LOW)
     void onInventoryClick(InventoryClickEvent event) {
         if (event.getInventory().getTitle().equals(name)) {
             event.setCancelled(true);
+            //should avoid item taken from menu
+            event.setCurrentItem(null);
+            
             int slot = event.getRawSlot();
             if (slot >= 0 && slot < size && optionNames[slot] != null) {
                 Plugin plugin = this.plugin;

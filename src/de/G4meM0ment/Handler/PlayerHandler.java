@@ -46,15 +46,13 @@ public class PlayerHandler {
 		players = list;
 	}
 	
-	public AGPlayer getAGPlayer(String pName)
-	{
+	public AGPlayer getAGPlayer(String pName) {
 		for(AGPlayer agp : getPlayers())
 			if(agp.getName().equalsIgnoreCase(pName))
 				return agp;
 		return null;
 	}
-	public AGPlayer addAGPlayer(String pName)
-	{
+	public AGPlayer addAGPlayer(String pName) {
 		AGPlayer agp = new AGPlayer(pName, new ArrayList<Shrine>(), new HashMap<Shrine, Long>());
 		getPlayers().add(agp);
 		return agp;
@@ -239,6 +237,8 @@ public class PlayerHandler {
 	 */
 	public ItemStack getPrayItem(Player p) {
 		for(ItemStack i : p.getInventory()) {
+			if(i == null) continue;
+			
 			//material equals
 			if(!i.getType().equals(ConfigHandler.prayItem) || !i.hasItemMeta())
 				continue;
@@ -253,6 +253,48 @@ public class PlayerHandler {
 	}
 	
 	/**
+	 * Opens a menu containing the information from the book - summarized
+	 * @param p
+	 * @param i
+	 */
+	public void openInfoMenu(Player p, ItemStack i) {
+		if(!i.getType().equals(ConfigHandler.prayItem)) return;
+		if(!i.getItemMeta().hasDisplayName()) return;
+		if(!i.getItemMeta().getDisplayName().equals(ConfigHandler.prayItemName)) return;
+		
+		AGPlayer agp = getAGPlayer(p.getName());
+		if(agp == null)
+			agp = addAGPlayer(p.getName());
+		
+		int iter = 0;
+		for(God g : AGManager.getGodHandler().getGodList())
+			for(Praying praying : g.getPrayings()) {
+				if(!PermHandler.hasPrayingPerm(p, praying)) continue;
+				iter++;
+			}
+		
+		IconMenu menu = new IconMenu(ConfigHandler.prayMenuTitle, iter, new IconMenu.OptionClickEventHandler() {
+	           @Override
+	           public void onOptionClick(IconMenu.OptionClickEvent event) {
+	           }
+	       }, plugin);
+		 
+		menu.setOption(iter, new ItemStack(ConfigHandler.prayItem, 1), ChatColor.WHITE+"Schreine", ChatColor.WHITE+"Du hast bereits "+agp.getFoundShrines().size()+" von "+AGManager.getShrineHandler().getShrines().size()+" gefunden");
+		
+		//adding the the items to choose the praying
+		iter = 0;
+		for(God g : AGManager.getGodHandler().getGodList())
+			for(Praying praying : g.getPrayings()) {
+				if(!PermHandler.hasPrayingPerm(p, praying)) continue;
+				menu.setOption(iter, new ItemStack(ConfigHandler.prayItem, 1), ChatColor.translateAlternateColorCodes('&', praying.getDisplayname()), ChatColor.translateAlternateColorCodes('&', "Gottheit: "+g.getName()+"\n"+praying.getDescription()));	 
+				iter++;
+			}
+		
+		
+		menu.open(p);
+	}
+	
+	/**
 	 * Update the praying items text if it's an written book
 	 * @param p
 	 */
@@ -260,6 +302,8 @@ public class PlayerHandler {
 		ItemStack i = item == null  ? p.getItemInHand() : item;
 		
 		if(!i.getType().equals(Material.WRITTEN_BOOK)) return;
+		if(!i.getItemMeta().hasDisplayName()) return;
+		if(!i.getItemMeta().getDisplayName().equals(ConfigHandler.prayItemName)) return;
 		if(!(i.getItemMeta() instanceof BookMeta)) return;
 		
 		AGPlayer agp = getAGPlayer(p.getName());

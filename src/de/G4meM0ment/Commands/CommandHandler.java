@@ -1,5 +1,5 @@
 /**
- * Command system orgiginally by garbagemule, thanks to him
+ * Command system originally by garbagemule, thanks to him
  */
 package de.G4meM0ment.Commands;
 

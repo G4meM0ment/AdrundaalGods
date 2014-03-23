@@ -49,26 +49,25 @@ public class PListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		//if player not has prayitem but is rightclicking a shrine, he gets a message
 		if(event.isCancelled() && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
+		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !event.getAction().equals(Action.RIGHT_CLICK_AIR)) return;
+		Player p = event.getPlayer();
 		if(!PermHandler.hasUserPerm(event.getPlayer())) return;
-		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 		
-		if(!pH.hasPrayItem(event.getPlayer())) {
+		if(!pH.hasPrayItem(p))
 			if(sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
-				Messenger.sendMessage(event.getPlayer(), Message.wrongItem);
+				Messenger.sendMessage(p, Message.wrongItem);
 				event.setCancelled(true);
 				return;
 			}
-		}
+		else
+			pH.openInfoMenu(p, p.getItemInHand());
 		
-		if(!pH.hasPrayItem(event.getPlayer())) return;
-		
+		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
 		AGPlayer agp = pH.getAGPlayer(event.getPlayer().getName());
 		if(agp == null)
 			agp = pH.addAGPlayer(event.getPlayer().getName());
-
-		if(!sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
-			pH.updateBookText(event.getPlayer(), null);
-		} else {
+			
+		if(sH.isShrine(event.getClickedBlock().getLocation(), 0)) {
 			Shrine s = sH.getShrine(event.getClickedBlock().getLocation(), 0);
 			if(agp.hasCooldown(s)) {
 				Messenger.sendMessage(event.getPlayer(), Message.cooldown, "%min%", ((ConfigHandler.shrineCooldown-(System.currentTimeMillis()-agp.getPrayed().get(s)))/1000)/60+"");
@@ -146,8 +145,7 @@ public class PListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onPlayerCraft(PrepareItemCraftEvent event)
-	{
+	public void onPlayerCraft(PrepareItemCraftEvent event) {
 		ItemStack item = event.getRecipe().getResult();
 		if(item.getType().equals(Material.WRITTEN_BOOK) && item.hasItemMeta())
 			if(item.getItemMeta().getDisplayName().equalsIgnoreCase(ConfigHandler.prayItemName))
@@ -155,8 +153,7 @@ public class PListener implements Listener {
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)
-	public void onInventoryClick(InventoryClickEvent event)
-	{
+	public void onInventoryClick(InventoryClickEvent event) {
 		AGPlayer agp = pH.getAGPlayer(event.getWhoClicked().getName());
 		if(agp == null)
 			return;
@@ -165,8 +162,7 @@ public class PListener implements Listener {
 			pH.updateBookText(agp.getPlayer(), pH.getPrayItem(agp.getPlayer()));
 	}
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void onPlayerPickupItem(PlayerPickupItemEvent event)
-	{
+	public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 		AGPlayer agp = pH.getAGPlayer(event.getPlayer().getName());
 		if(agp == null)
 			return;
